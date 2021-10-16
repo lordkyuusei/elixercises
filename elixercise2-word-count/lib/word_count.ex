@@ -6,7 +6,8 @@ defmodule WordCount do
   """
   @spec count(String.t()) :: map
   def count(sentence) do
-    String.split(sentence, [",", "_", ":", "\n", " "], trim: true)
+    String.downcase(sentence)
+    |> String.split(~r/[^[:alnum:]\-]/u, trim: true)
     |> Enum.map(&clean_punctuation/1)
     |> Enum.reduce(%{}, &feed_count_map/2)
   end
@@ -17,6 +18,6 @@ defmodule WordCount do
   end
 
   defp feed_count_map(word, map) do
-    Map.update(map, String.downcase(word), 1, fn count -> count + 1 end)
+    Map.update(map, word, 1, fn count -> count + 1 end)
   end
 end
